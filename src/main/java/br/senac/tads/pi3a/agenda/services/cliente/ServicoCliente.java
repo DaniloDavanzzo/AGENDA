@@ -19,8 +19,8 @@ public class ServicoCliente {
             throws ClienteException, DataSourceException {
 
         //Realização de validações de negócio
-        
-         if (cliente.getData() == null || cliente.getData().equals("  /  /    ")) {
+                                    
+        if (cliente.getData() == null || "".equals(cliente.getData())) {
             throw new ClienteException("É necessário informar um"
                     + "a data de nascimento");
         }
@@ -35,11 +35,11 @@ public class ServicoCliente {
             throw new ClienteException("É necessário informar um"
                     + "a data de nascimento");
         }
-        if (cliente.getEmail() == null || "".equals(cliente.getEmail())) {
-            throw new ClienteException("É necessário informar o e-mail");
-        } 
         if (cliente.getTelCelular() == null || (cliente.getTelCelular().equals("(  )     -    "))) {
             throw new ClienteException("É necessário informar o telefone celular");
+        }
+        if (cliente.getEmail() == null || "".equals(cliente.getEmail())) {
+            throw new ClienteException("É necessário informar o e-mail");
         }
 
         try {
@@ -60,8 +60,9 @@ public class ServicoCliente {
     //Atualiza um cliente na fonte de dados
     public static void atualizarCliente(Cliente cliente, String cpf)
             throws ClienteException, DataSourceException {
-         //Realização de validações de negócio
-      if (cliente.getData() == null || cliente.getData().equals("  /  /    ")) {
+
+        //Realização de validações de negócio
+        if (cliente.getData() == null || "".equals(cliente.getData())) {
             throw new ClienteException("É necessário informar um"
                     + "a data de nascimento");
         }
@@ -76,17 +77,17 @@ public class ServicoCliente {
             throw new ClienteException("É necessário informar um"
                     + "a data de nascimento");
         }
-        if (cliente.getEmail() == null || "".equals(cliente.getEmail())) {
-            throw new ClienteException("É necessário informar o e-mail");
-        } 
         if (cliente.getTelCelular() == null || (cliente.getTelCelular().equals("(  )     -    "))) {
             throw new ClienteException("É necessário informar o telefone celular");
+        }
+        if (cliente.getEmail() == null || "".equals(cliente.getEmail())) {
+            throw new ClienteException("É necessário informar o e-mail");
         }
 
         try {
             //Realiza a chamada de inserção na fonte de dados
             ClienteDAO cliDAO = new ClienteDAO();
-            cliDAO.update(cliente,cpf);
+            cliDAO.update(cliente, cpf);
 
         } catch (Exception e) {
             //Imprime qualquer erro técnico no console e devolve
@@ -101,7 +102,7 @@ public class ServicoCliente {
             throws ClienteException, DataSourceException {
         try {
             //Retorna o cliente obtido com o DAO
-              ClienteDAO cliDAO = new ClienteDAO();
+            ClienteDAO cliDAO = new ClienteDAO();
             cliDAO.buscar(Cliente, nome);
 
         } catch (Exception e) {

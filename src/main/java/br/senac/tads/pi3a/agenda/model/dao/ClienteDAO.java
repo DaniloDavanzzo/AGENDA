@@ -47,7 +47,8 @@ public class ClienteDAO {
         con.Connection();
         try {
 
-            PreparedStatement pst = con.con.prepareStatement("update cliente set cli_data=?,cli_nome=?, cli_data_nasc=?, cli_email=?,cli_telefone_movel=? where cli_nome = ?");
+            PreparedStatement pst = con.con.prepareStatement("update cliente set cli_data=?,cli_nome=?, "
+                    + "cli_data_nasc=?, cli_email=?,cli_telefone_movel=? where cli_nome = ?");
 
             pst.setString(1, cliente.getData());
             pst.setString(2, cliente.getNome());
@@ -106,13 +107,11 @@ public class ClienteDAO {
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 Cliente cliente = new Cliente();
-                 cliente.setData(rs.getString("cli_data"));
+                cliente.setData(rs.getString("cli_data"));
                 cliente.setNome(rs.getString("cli_nome"));
                 cliente.setDataNasc(rs.getString("cli_data_nasc"));
                 cliente.setTelCelular(rs.getString("cli_telefone_movel"));
                 cliente.setEmail(rs.getString("cli_email"));
-                
-
                 clientes.add(cliente);
             }
             rs.close();

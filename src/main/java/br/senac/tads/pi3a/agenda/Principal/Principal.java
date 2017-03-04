@@ -1,31 +1,35 @@
 package br.senac.tads.pi3a.agenda.Principal;
 import br.senac.tads.pi3a.agenda.connection.Connectionfactory;
 import br.senac.tads.pi3a.agenda.model.bean.Cliente;
+import br.senac.tads.pi3a.agenda.model.bean.ModeloTabela;
 import br.senac.tads.pi3a.agenda.model.dao.ClienteDAO;
 import br.senac.tads.pi3a.agenda.services.cliente.ServicoCliente;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.logging.Level;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import javax.swing.JOptionPane;
+import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
-
-
 
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 /**
  *
  * @author DANILO&PAULA
  */
 public class Principal extends javax.swing.JFrame {
+
     Connectionfactory con = new Connectionfactory();
     ClienteDAO dao = new ClienteDAO();
     Cliente cliente = new Cliente();
-   
- 
+
     /**
      * Creates new form View
      */
@@ -33,8 +37,6 @@ public class Principal extends javax.swing.JFrame {
         initComponents();
     }
 
-    
-    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -231,6 +233,7 @@ public class Principal extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
  // Validar numeros 
+
     private void validarNumerosKeyTyped(java.awt.event.KeyEvent evt) {
         char validarNumeros = evt.getKeyChar();
         if ((validarNumeros < '0' || validarNumeros > '9')
@@ -269,7 +272,8 @@ public class Principal extends javax.swing.JFrame {
             evt.consume();
         }
     }
-      public void read() throws SQLException {
+
+    public void read() throws SQLException {
         DefaultTableModel modelo = (DefaultTableModel) jTableDados.getModel();
         modelo.setNumRows(0);
         ClienteDAO dao = new ClienteDAO();
@@ -280,9 +284,7 @@ public class Principal extends javax.swing.JFrame {
                 consulta.getNome(),
                 consulta.getDataNasc(),
                 consulta.getTelCelular(),
-                consulta.getEmail(),
-               
-            });
+                consulta.getEmail(),});
 
         }
 
@@ -295,27 +297,24 @@ public class Principal extends javax.swing.JFrame {
 
         for (Cliente consulta : dao.retornadesc(desc)) {
             modelo.addRow(new Object[]{
-                 consulta.getData(),
+                consulta.getData(),
                 consulta.getNome(),
                 consulta.getDataNasc(),
                 consulta.getTelCelular(),
-                consulta.getEmail(),
-
-            });
+                consulta.getEmail(),});
 
         }
     }
-    
+
     private void jButtonSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSalvarActionPerformed
-       //Data do formulario de venda
+        //Data do formulario de venda
         cliente.setData(txtData.getText());
         cliente.setNome(txtNome.getText());
         cliente.setDataNasc(txtDataNasc.getText());
         cliente.setTelCelular(txtTelefone.getText());
-        cliente.setEmail(txtEmail.getText()); 
-       
+        cliente.setEmail(txtEmail.getText());
 
-         try {
+        try {
             //Chama o serviço para cadastro do cliente
             ServicoCliente.cadastrarCliente(cliente);
         } catch (Exception e) {
@@ -335,29 +334,28 @@ public class Principal extends javax.swing.JFrame {
         txtDataNasc.setText("");
         txtTelefone.setText("");
         txtEmail.setText("");
-        
-     
-       
+
+
     }//GEN-LAST:event_jButtonSalvarActionPerformed
 
     private void jButtonSairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSairActionPerformed
         // TODO add your handling code here:
-          // TODO add your handling code here:
-       
+        // TODO add your handling code here:
+
         int Confirm = JOptionPane.showConfirmDialog(null, "Deseja Sair do Sistema?", "Confirmar Saída", JOptionPane.YES_NO_OPTION);
 
         if (Confirm == JOptionPane.YES_OPTION) {
             con.closeConnection();
             dispose();
         } else if (Confirm == JOptionPane.NO_OPTION) {
-        
-    }                     
+
+        }
     }//GEN-LAST:event_jButtonSairActionPerformed
 
     private void txtNomeKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNomeKeyTyped
         // TODO add your handling code here:
         validarLetrasKeyTyped(evt);
-           // TODO add your handling code here:
+        // TODO add your handling code here:
         int numCaracteres = 45;
         if (txtNome.getText().length() >= numCaracteres) {
             evt.consume();
@@ -367,7 +365,7 @@ public class Principal extends javax.swing.JFrame {
     private void txtEmailKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtEmailKeyTyped
         // TODO add your handling code here:
         validarEmailKeyTyped(evt);
-           // TODO add your handling code here:
+        // TODO add your handling code here:
         int numCaracteres = 30;
         if (txtEmail.getText().length() >= numCaracteres) {
             evt.consume();
@@ -375,20 +373,22 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_txtEmailKeyTyped
 
     private void jButtonConsultarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonConsultarActionPerformed
-      
+
         if (!txtNome.getText().equals("")) {
             try {
-                readDesc(txtNome.getText());  
+                readDesc(txtNome.getText());
             } catch (SQLException ex) {
-                
+
             }
         } else {
             try {
                 read();
             } catch (SQLException ex) {
-              
+
             }
         }
+
+
     }//GEN-LAST:event_jButtonConsultarActionPerformed
 
     /**
@@ -425,6 +425,69 @@ public class Principal extends javax.swing.JFrame {
                 new Principal().setVisible(true);
             }
         });
+    }
+
+    public void preencherTabela(String sql) {
+        ArrayList dados = new ArrayList();
+        String[] colunas = new String[]{"ID", "DATA", "NOME", "DATANASC", "TELEFONE", "EMAIL"};
+        con.Connection();
+        ResultSet rs = executaSql(sql);
+        try {
+            rs.first();
+            do {
+
+                // Preenchemdo o arrayList com os dados retornados do BD atraves da variavel rs do Tipo ResultSet
+                dados.add(new Object[]{rs.getString("id_cliente"), rs.getString("cli_data"), rs.getString("cli_nome"),
+                     rs.getString("cli_data_nasc"), rs.getString("cli_telefone_movel"), rs.getString("cli_email")});
+            } while (rs.next());
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(rootPane, "Erro ao Preencher Tabela Relatório! " + ex);
+        }
+        ModeloTabela modelo = new ModeloTabela(dados, colunas);
+        jTableDados.setModel(modelo); // recebendo o modelo da tabela que foi criada
+        jTableDados.getColumnModel().getColumn(0).setPreferredWidth(80);
+        jTableDados.getColumnModel().getColumn(0).setResizable(false);
+        jTableDados.getColumnModel().getColumn(1).setPreferredWidth(200);
+        jTableDados.getColumnModel().getColumn(1).setResizable(false);
+        jTableDados.getColumnModel().getColumn(2).setPreferredWidth(120);
+        jTableDados.getColumnModel().getColumn(2).setResizable(false);
+        jTableDados.getColumnModel().getColumn(3).setPreferredWidth(120);
+        jTableDados.getColumnModel().getColumn(3).setResizable(false);
+        jTableDados.getColumnModel().getColumn(4).setPreferredWidth(100);
+        jTableDados.getColumnModel().getColumn(4).setResizable(false);
+        jTableDados.getColumnModel().getColumn(5).setPreferredWidth(70);
+        jTableDados.getColumnModel().getColumn(5).setResizable(false);
+
+        jTableDados.getTableHeader().setReorderingAllowed(false);
+        jTableDados.setAutoResizeMode(jTableDados.AUTO_RESIZE_OFF);// Tabela não pode ser reaorganizada
+        jTableDados.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+    }
+
+    public ResultSet executaSql(String sql) {
+        // Abrindo venda assim que selecionar um produto no formulario de venda e setando seu com valor de venda zerado
+        try {
+            //PreparedStatement pst =con.con.prepareStatement("insert into venda (vl_ven) values (?)"); linha abaixo
+            PreparedStatement pst = con.con.prepareStatement(sql);
+
+            Date dataNascimento = null;
+
+            SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+
+            try {
+                dataNascimento = format.parse(txtDataNasc.getText());
+
+            } catch (Exception e) {
+
+            }
+            format.format(dataNascimento);
+            pst.setTimestamp(1, new Timestamp(dataNascimento.getTime()));
+
+            return pst.executeQuery();
+        } catch (SQLException ex) {
+
+        }
+        return null;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
