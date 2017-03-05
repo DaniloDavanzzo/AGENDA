@@ -1,5 +1,7 @@
 package br.senac.tads.pi3a.agenda.model.bean;
 
+import java.util.Date;
+
 /**
  *
  * @author Glebson
@@ -31,12 +33,15 @@ public class Cliente {
     public void setId(int id) {
         this.id = id;
     } 
+    
+    
+    
      /**
      * @return the Data
      */
       public String getData() {
         return data;
-    }    
+    }
     /**
      * @param data the nome to id
      */
@@ -55,18 +60,16 @@ public class Cliente {
     public void setNome(String nome) {
         this.nome = nome;
     }
-    /**
-     * @return the dataNasc
-     */
+
     public String getDataNasc() {
         return dataNasc;
     }
-    /**
-     * @param dataNasc the dataNasc to set
-     */
-    public void setDataNasc(String dataNasc) {
+
+   
+    public void setDataNasc(String dataNasc) {  
         this.dataNasc = dataNasc;
     }
+
     /**
      * @return the email
      */

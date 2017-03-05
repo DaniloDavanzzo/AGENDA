@@ -10,16 +10,19 @@ import javax.swing.JOptionPane;
  *
  * @author Danilo
  */
-public class Connectionfactory {
-
-    private static final String DRIVER = "con.mysql.jdbc.Driver";
-    private static final String URL = "jdbc:mysql://localhost:3306/agenda";
+public class ConnectionUtils {
+    private static final String DRIVER = "con.jdbc.Driver";
+    private static final String URL = "jdbc:derby://localhost:1527/jdbc_contato";
     private static final String USER = "root";
-    private static final String PASS = "";
+    private static final String PASS = "root";
+//    private static final String DRIVER = "con.mysql.jdbc.Driver";
+//    private static final String URL = "jdbc:mysql://localhost:3306/agenda";
+//    private static final String USER = "root";
+//    private static final String PASS = "";
     public Statement stmt = null; //prepara sql e executar
     public ResultSet rs = null; // retornando na variavel rs
     public Connection con;
-    
+
     public void Connection() {
         try {
             
@@ -36,7 +39,7 @@ public class Connectionfactory {
              con.close();
              
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null," Erro ao Fechar Conexão com BAnco de Dados: \n " + ex.getMessage());
+            JOptionPane.showMessageDialog(null," Erro ao Fechar Conexão com Banco de Dados: \n " + ex.getMessage());
         }
     }    
     public void executaSql(String sql){

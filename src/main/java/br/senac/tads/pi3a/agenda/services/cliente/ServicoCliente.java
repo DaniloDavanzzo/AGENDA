@@ -20,10 +20,7 @@ public class ServicoCliente {
 
         //Realização de validações de negócio
                                     
-        if (cliente.getData() == null || "".equals(cliente.getData())) {
-            throw new ClienteException("É necessário informar um"
-                    + "a data de nascimento");
-        }
+      
         if (cliente == null) {
             throw new ClienteException("Não foi informado um cliente");
         }
@@ -56,17 +53,12 @@ public class ServicoCliente {
     }
 
     
-    
     //Atualiza um cliente na fonte de dados
     public static void atualizarCliente(Cliente cliente, String cpf)
             throws ClienteException, DataSourceException {
 
         //Realização de validações de negócio
-        if (cliente.getData() == null || "".equals(cliente.getData())) {
-            throw new ClienteException("É necessário informar um"
-                    + "a data de nascimento");
-        }
-        if (cliente == null) {
+         if (cliente == null) {
             throw new ClienteException("Não foi informado um cliente");
         }
         if (cliente.getNome() == null || "".equals(cliente.getNome())) {
@@ -93,7 +85,7 @@ public class ServicoCliente {
             //Imprime qualquer erro técnico no console e devolve
             //uma exceção e uma mensagem amigável a camada de visão
             e.printStackTrace();
-            throw new DataSourceException("1Erro na fonte de dados", e);
+            throw new DataSourceException("Erro na fonte de dados", e);
         }
     }
 

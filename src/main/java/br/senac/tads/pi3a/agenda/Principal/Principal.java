@@ -1,9 +1,11 @@
 package br.senac.tads.pi3a.agenda.Principal;
-import br.senac.tads.pi3a.agenda.connection.Connectionfactory;
+import br.senac.tads.pi3a.agenda.connection.ConnectionUtils;
 import br.senac.tads.pi3a.agenda.model.bean.Cliente;
 import br.senac.tads.pi3a.agenda.model.bean.ModeloTabela;
 import br.senac.tads.pi3a.agenda.model.dao.ClienteDAO;
 import br.senac.tads.pi3a.agenda.services.cliente.ServicoCliente;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,6 +13,8 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
@@ -26,7 +30,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class Principal extends javax.swing.JFrame {
 
-    Connectionfactory con = new Connectionfactory();
+    ConnectionUtils con = new ConnectionUtils();
     ClienteDAO dao = new ClienteDAO();
     Cliente cliente = new Cliente();
 
@@ -35,6 +39,11 @@ public class Principal extends javax.swing.JFrame {
      */
     public Principal() {
         initComponents();
+        con.Connection();
+        this.setLocationRelativeTo(null);
+           Date dataSistema = new Date();
+        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy"); 
+        txtData.setText(formato.format(dataSistema)); 
     }
 
     /**
@@ -136,8 +145,9 @@ public class Principal extends javax.swing.JFrame {
             }
         });
 
+        txtData.setEditable(false);
         try {
-            txtData.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("##/##/####")));
+            txtData.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("")));
         } catch (java.text.ParseException ex) {
             ex.printStackTrace();
         }
@@ -308,6 +318,8 @@ public class Principal extends javax.swing.JFrame {
 
     private void jButtonSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSalvarActionPerformed
         //Data do formulario de venda
+        
+   
         cliente.setData(txtData.getText());
         cliente.setNome(txtNome.getText());
         cliente.setDataNasc(txtDataNasc.getText());
@@ -338,12 +350,43 @@ public class Principal extends javax.swing.JFrame {
 
     }//GEN-LAST:event_jButtonSalvarActionPerformed
 
+        public void preencherTabelaProduto(String sql) {
+        ArrayList dados = new ArrayList();
+        String[] colunas = new String[]{"ID", "DATA", "NOME", "DATA NASC", "TELEFONE", "E-MAIL"};
+
+        con.Connection();
+        con.executaSql(sql);
+        try {
+            con.rs.first();
+            do {
+                // Preenchemdo o arrayList com os dados retornados do BD atraves da variavel rs do Tipo ResultSet
+                dados.add(new Object[]{con.rs.getString("id_cliente"), con.rs.getString("id_data"), con.rs.getString("cli_nome"),con.rs.getString("cli_data_nasc"), con.rs.getString("cli_telefone_movel"), con.rs.getString("cli_email")});
+            } while (con.rs.next());
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(rootPane, "Erro ao preencher! " + ex);
+        }
+        ModeloTabela modelo = new ModeloTabela(dados, colunas);
+        jTableDados.setModel(modelo); // recebendo o modelo da tabela que foi criada
+        jTableDados.getColumnModel().getColumn(0).setPreferredWidth(50);
+        jTableDados.getColumnModel().getColumn(0).setResizable(false);
+        jTableDados.getColumnModel().getColumn(1).setPreferredWidth(170);
+        jTableDados.getColumnModel().getColumn(1).setResizable(false);
+        jTableDados.getColumnModel().getColumn(2).setPreferredWidth(160);
+        jTableDados.getColumnModel().getColumn(2).setResizable(false);
+        jTableDados.getColumnModel().getColumn(3).setPreferredWidth(180);
+        jTableDados.getColumnModel().getColumn(3).setResizable(false);
+        jTableDados.getColumnModel().getColumn(4).setPreferredWidth(180);
+        jTableDados.getColumnModel().getColumn(4).setResizable(false);
+        jTableDados.getColumnModel().getColumn(5).setPreferredWidth(180);
+        jTableDados.getColumnModel().getColumn(5).setResizable(false);
+        jTableDados.getTableHeader().setReorderingAllowed(false);
+        jTableDados.setAutoResizeMode(jTableDados.AUTO_RESIZE_OFF);// Tabela não pode ser reaorganizada
+        jTableDados.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+    }
+    
     private void jButtonSairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSairActionPerformed
-        // TODO add your handling code here:
-        // TODO add your handling code here:
-
-        int Confirm = JOptionPane.showConfirmDialog(null, "Deseja Sair do Sistema?", "Confirmar Saída", JOptionPane.YES_NO_OPTION);
-
+     int Confirm = JOptionPane.showConfirmDialog(null, "Deseja Sair do Sistema?", "Confirmar Saída", JOptionPane.YES_NO_OPTION);
         if (Confirm == JOptionPane.YES_OPTION) {
             con.closeConnection();
             dispose();
@@ -425,70 +468,8 @@ public class Principal extends javax.swing.JFrame {
                 new Principal().setVisible(true);
             }
         });
-    }
+}
 
-    public void preencherTabela(String sql) {
-        ArrayList dados = new ArrayList();
-        String[] colunas = new String[]{"ID", "DATA", "NOME", "DATANASC", "TELEFONE", "EMAIL"};
-        con.Connection();
-        ResultSet rs = executaSql(sql);
-        try {
-            rs.first();
-            do {
-
-                // Preenchemdo o arrayList com os dados retornados do BD atraves da variavel rs do Tipo ResultSet
-                dados.add(new Object[]{rs.getString("id_cliente"), rs.getString("cli_data"), rs.getString("cli_nome"),
-                     rs.getString("cli_data_nasc"), rs.getString("cli_telefone_movel"), rs.getString("cli_email")});
-            } while (rs.next());
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(rootPane, "Erro ao Preencher Tabela Relatório! " + ex);
-        }
-        ModeloTabela modelo = new ModeloTabela(dados, colunas);
-        jTableDados.setModel(modelo); // recebendo o modelo da tabela que foi criada
-        jTableDados.getColumnModel().getColumn(0).setPreferredWidth(80);
-        jTableDados.getColumnModel().getColumn(0).setResizable(false);
-        jTableDados.getColumnModel().getColumn(1).setPreferredWidth(200);
-        jTableDados.getColumnModel().getColumn(1).setResizable(false);
-        jTableDados.getColumnModel().getColumn(2).setPreferredWidth(120);
-        jTableDados.getColumnModel().getColumn(2).setResizable(false);
-        jTableDados.getColumnModel().getColumn(3).setPreferredWidth(120);
-        jTableDados.getColumnModel().getColumn(3).setResizable(false);
-        jTableDados.getColumnModel().getColumn(4).setPreferredWidth(100);
-        jTableDados.getColumnModel().getColumn(4).setResizable(false);
-        jTableDados.getColumnModel().getColumn(5).setPreferredWidth(70);
-        jTableDados.getColumnModel().getColumn(5).setResizable(false);
-
-        jTableDados.getTableHeader().setReorderingAllowed(false);
-        jTableDados.setAutoResizeMode(jTableDados.AUTO_RESIZE_OFF);// Tabela não pode ser reaorganizada
-        jTableDados.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-
-    }
-
-    public ResultSet executaSql(String sql) {
-        // Abrindo venda assim que selecionar um produto no formulario de venda e setando seu com valor de venda zerado
-        try {
-            //PreparedStatement pst =con.con.prepareStatement("insert into venda (vl_ven) values (?)"); linha abaixo
-            PreparedStatement pst = con.con.prepareStatement(sql);
-
-            Date dataNascimento = null;
-
-            SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
-
-            try {
-                dataNascimento = format.parse(txtDataNasc.getText());
-
-            } catch (Exception e) {
-
-            }
-            format.format(dataNascimento);
-            pst.setTimestamp(1, new Timestamp(dataNascimento.getTime()));
-
-            return pst.executeQuery();
-        } catch (SQLException ex) {
-
-        }
-        return null;
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonConsultar;

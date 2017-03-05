@@ -10,7 +10,7 @@ import javax.swing.JOptionPane;
 import java.sql.PreparedStatement;
 import javax.management.RuntimeErrorException;
 import br.senac.tads.pi3a.agenda.model.bean.Cliente;
-import br.senac.tads.pi3a.agenda.connection.Connectionfactory;
+import br.senac.tads.pi3a.agenda.connection.ConnectionUtils;
 import br.senac.tads.pi3a.agenda.exceptions.ClienteException;
 
 /**
@@ -19,16 +19,17 @@ import br.senac.tads.pi3a.agenda.exceptions.ClienteException;
  */
 public class ClienteDAO {
 
-    Connectionfactory con = new Connectionfactory();
+    ConnectionUtils con = new ConnectionUtils();
 
     public void cadastrar(Cliente cliente) {
         con.Connection();
         try {
 
-            PreparedStatement pst = con.con.prepareStatement("INSERT INTO cliente"
-                    + " (cli_data,cli_nome,cli_data_nasc,cli_email,cli_telefone_movel)"
+              
+            PreparedStatement pst = con.con.prepareStatement("INSERT INTO AGENDA"
+                    + " (cli_data,cli_nome,cli_data_nasc,cli_telefone_movel,cli_email)"
                     + " VALUES(?,?,?,?,?)");
-
+ 
             pst.setString(1, cliente.getData());
             pst.setString(2, cliente.getNome());
             pst.setString(3, cliente.getDataNasc());                  
@@ -39,7 +40,7 @@ public class ClienteDAO {
             JOptionPane.showMessageDialog(null, " Dados Salvos com Sucesso!");
 
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, " Erro ao Salvar!\n " + ex);
+            JOptionPane.showMessageDialog(null, " 1Erro ao Salvar!\n " + ex);
         }
         con.closeConnection();
     }
@@ -47,8 +48,8 @@ public class ClienteDAO {
         con.Connection();
         try {
 
-            PreparedStatement pst = con.con.prepareStatement("update cliente set cli_data=?,cli_nome=?, "
-                    + "cli_data_nasc=?, cli_email=?,cli_telefone_movel=? where cli_nome = ?");
+            PreparedStatement pst = con.con.prepareStatement("update AGENDA set cli_data=?,cli_nome=?, "
+                    + "cli_data_nasc=?,cli_telefone_movel=?, cli_email=? where cli_nome = ?");
 
             pst.setString(1, cliente.getData());
             pst.setString(2, cliente.getNome());
@@ -62,7 +63,7 @@ public class ClienteDAO {
             JOptionPane.showMessageDialog(null, " Dados Salvos com Sucesso!");
 
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, " Erro ao Salvar!\n " + ex);
+            JOptionPane.showMessageDialog(null, " 2Erro ao Salvar!\n " + ex);
         }
         con.closeConnection();
         
@@ -71,7 +72,7 @@ public class ClienteDAO {
         con.Connection();
         try {
 
-            PreparedStatement pst = con.con.prepareStatement("select * from cliente where cli_nome = ?");
+            PreparedStatement pst = con.con.prepareStatement("select * from AGENDA where cli_nome = ?");
             pst.setString(2, nome);
             ResultSet rs = pst.executeQuery();
             if (rs.next()) {
@@ -100,9 +101,9 @@ public class ClienteDAO {
         List<Cliente> clientes = new ArrayList<>();
 
         try {
-            Connectionfactory con = new Connectionfactory();
+            ConnectionUtils con = new ConnectionUtils();
             con.Connection();
-            String sql = "select * from Cliente";
+            String sql = "select * from AGENDA";
             PreparedStatement stmt = con.con.prepareStatement(sql);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
@@ -126,10 +127,10 @@ public class ClienteDAO {
         List<Cliente> clientes = new ArrayList<>();
 
         try {
-            Connectionfactory con = new Connectionfactory();
+            ConnectionUtils con = new ConnectionUtils();
             con.Connection();
 
-            PreparedStatement stmt = con.con.prepareStatement("select * from Cliente Where cli_nome LIKE ?");
+            PreparedStatement stmt = con.con.prepareStatement("select * from AGENDA Where cli_nome LIKE ?");
             stmt.setString(1, "%" + desc + "%");
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
@@ -155,7 +156,7 @@ public class ClienteDAO {
             throws SQLException, Exception {
         //Monta a string de listagem de clientes no banco, considerando
         //apenas a coluna de ativação de clientes ("enabled")
-        String sql = "SELECT * FROM cliente WHERE enabled=true";
+        String sql = "SELECT * FROM AGENDA WHERE enabled=true";
 
         //Retorna o resultado da execução da consulta SQL montada
         return executarConsulta(sql);
@@ -172,7 +173,7 @@ public class ClienteDAO {
         //parâmetro). Além disso, também considera apenas os elementos
         //que possuem a coluna de ativação de clientes configurada com
         //o valor correto ("enabled" com "true")
-        String sql = "SELECT * FROM cliente WHERE ((UPPER(nome) LIKE UPPER('%"
+        String sql = "SELECT * FROM AGENDA WHERE ((UPPER(nome) LIKE UPPER('%"
                 + valor + "%') OR UPPER(cliente.Nome) "
                 + "LIKE UPPER('%" + valor + "%')) AND enabled=true)";
 
@@ -186,7 +187,7 @@ public class ClienteDAO {
             throws SQLException, Exception {
         //Compõe uma String de consulta que considera apenas o cliente
         //com o ID informado e que esteja ativo ("enabled" com "true")
-        String sql = "SELECT * FROM cliente WHERE (cliente_id=" + id
+        String sql = "SELECT * FROM AGENDA WHERE (cliente_id=" + id
                 + " AND enabled=true)";
 
         //Armazena o valor da consulta numa lista temporária
@@ -272,13 +273,12 @@ public class ClienteDAO {
                 //Cria uma instância de Cliente e popula com os valores do BD
                 Cliente cliente = new Cliente();
 
-                cliente.setId(result.getInt("cliente_id"));
+                cliente.setId(result.getInt("id_cliente"));
                 cliente.setDataNasc(result.getString("cli_data"));  
                 cliente.setNome(result.getString("cli_nome"));
                 cliente.setDataNasc(result.getString("cli_data_nasc"));             
-                cliente.setEmail(result.getString("cli_email"));           
                 cliente.setTelCelular(result.getString("cli_telefone_movel"));
-
+                cliente.setEmail(result.getString("cli_email"));  
 
                 
                 //Adiciona a instância na lista
