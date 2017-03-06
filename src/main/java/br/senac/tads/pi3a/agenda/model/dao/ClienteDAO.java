@@ -12,6 +12,9 @@ import javax.management.RuntimeErrorException;
 import br.senac.tads.pi3a.agenda.model.bean.Cliente;
 import br.senac.tads.pi3a.agenda.connection.ConnectionUtils;
 import br.senac.tads.pi3a.agenda.exceptions.ClienteException;
+import java.util.Date;
+import javafx.scene.chart.PieChart;
+
 
 /**
  *
@@ -29,7 +32,7 @@ public class ClienteDAO {
             PreparedStatement pst = con.con.prepareStatement("INSERT INTO AGENDA"
                     + " (cli_data,cli_nome,cli_data_nasc,cli_telefone_movel,cli_email)"
                     + " VALUES(?,?,?,?,?)");
- 
+          
             pst.setString(1, cliente.getData());
             pst.setString(2, cliente.getNome());
             pst.setString(3, cliente.getDataNasc());                  
@@ -49,15 +52,14 @@ public class ClienteDAO {
         try {
 
             PreparedStatement pst = con.con.prepareStatement("update AGENDA set cli_data=?,cli_nome=?, "
-                    + "cli_data_nasc=?,cli_telefone_movel=?, cli_email=? where cli_nome = ?");
+                    + "cli_data_nasc=?,cli_telefone_movel=?,cli_email=? where cli_nome = ?");
 
             pst.setString(1, cliente.getData());
             pst.setString(2, cliente.getNome());
             pst.setString(3, cliente.getDataNasc());                  
             pst.setString(4, cliente.getTelCelular());
             pst.setString(5, cliente.getEmail());
-            pst.setString(2, nome);
-
+//            pst.setString(2,nome);
             pst.execute();
 
             JOptionPane.showMessageDialog(null, " Dados Salvos com Sucesso!");
@@ -274,7 +276,7 @@ public class ClienteDAO {
                 Cliente cliente = new Cliente();
 
                 cliente.setId(result.getInt("id_cliente"));
-                cliente.setDataNasc(result.getString("cli_data"));  
+                cliente.setData(result.getString("cli_data"));  
                 cliente.setNome(result.getString("cli_nome"));
                 cliente.setDataNasc(result.getString("cli_data_nasc"));             
                 cliente.setTelCelular(result.getString("cli_telefone_movel"));
