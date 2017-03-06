@@ -23,7 +23,7 @@ import javafx.scene.chart.PieChart;
 public class ClienteDAO {
 
     ConnectionUtils con = new ConnectionUtils();
-
+    Cliente mod = new Cliente();
     public void cadastrar(Cliente cliente) {
         con.Connection();
         try {
