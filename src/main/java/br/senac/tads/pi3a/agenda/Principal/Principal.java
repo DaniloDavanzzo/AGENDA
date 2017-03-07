@@ -425,7 +425,7 @@ public class Principal extends javax.swing.JFrame {
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
  
         Date dataSistema = new Date();
-        SimpleDateFormat formato = new SimpleDateFormat("MM/dd/yyyy" + " HH:mm:ss");
+        SimpleDateFormat formato = new SimpleDateFormat("yyyy/MM/dd" + " HH:mm:ss");
         jLData.setText(formato.format(dataSistema));
    
     }//GEN-LAST:event_formWindowOpened
