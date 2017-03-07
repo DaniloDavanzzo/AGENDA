@@ -40,10 +40,10 @@ public class ClienteDAO {
             pst.setString(5, cliente.getEmail());
             pst.execute();
 
-            JOptionPane.showMessageDialog(null, " Dados Salvos com Sucesso!");
+
 
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, " 1Erro ao Salvar!\n " + ex);
+            JOptionPane.showMessageDialog(null, " Erro ao Salvar!\n " + ex);
         }
         con.closeConnection();
     }
@@ -65,7 +65,7 @@ public class ClienteDAO {
             JOptionPane.showMessageDialog(null, " Dados Salvos com Sucesso!");
 
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, " 2Erro ao Salvar!\n " + ex);
+            JOptionPane.showMessageDialog(null, " Erro ao Salvar!\n " + ex);
         }
         con.closeConnection();
         
@@ -79,6 +79,7 @@ public class ClienteDAO {
             ResultSet rs = pst.executeQuery();
             if (rs.next()) {
                 JOptionPane.showMessageDialog(null,  "Cliente encontrado");
+                cliente.setId(rs.getInt("id_cliente"));
                 cliente.setData(rs.getString("cli_data"));
                 cliente.setNome(rs.getString("cli_nome"));
                 cliente.setDataNasc(rs.getString("cli_data_nasc"));
@@ -110,6 +111,7 @@ public class ClienteDAO {
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 Cliente cliente = new Cliente();
+                cliente.setId(rs.getInt("id_cliente"));
                 cliente.setData(rs.getString("cli_data"));
                 cliente.setNome(rs.getString("cli_nome"));
                 cliente.setDataNasc(rs.getString("cli_data_nasc"));
@@ -281,7 +283,6 @@ public class ClienteDAO {
                 cliente.setDataNasc(result.getString("cli_data_nasc"));             
                 cliente.setTelCelular(result.getString("cli_telefone_movel"));
                 cliente.setEmail(result.getString("cli_email"));  
-
                 
                 //Adiciona a instância na lista
                 listaClientes.add(cliente);
